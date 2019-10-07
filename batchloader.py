@@ -45,8 +45,6 @@ def create_clip_list():
                 time_frame = '&started_at=' + from_time + '&ended_at=' + to_time
     clips = []
     dict = []
-    dict_count = 0
-    # Generic first
     value_list = [{"sort0":"","sort1":"", "first0":"","first1":""},{"sort0":"","sort1":"", "first0":"100","first1":"100"}]
     for current_dict in value_list:
         print("Preparing clip list using: " + str(current_dict) + "...")
@@ -63,11 +61,9 @@ def create_clip_list():
                 if entry['url'] not in dict:
                     print("New entry: " + str(entry['url']))
                     dict.append(entry['url'])
-                dict_count += 1
     f4 = open("dict.txt", "w")
     f4.write(str(dict))
     print("Clip list created with size: " + str(len(dict)))
-    sys.exit()
 
 def download_clips():
     for clip in open('clips.txt', 'r'):
