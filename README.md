@@ -22,6 +22,5 @@ pip install requests
 cd twitch-batch-loader
 python batchloader.py <YOUR AWESOME CLIENT ID> [<THE AWESOME BROADCASTER ID> [<Start date of time frame> <End date of time frame>]]
 ```
-The clip list creator does not include every clip for the provided broadcaster_id though, not using first=100 in the requests that use pagination returns 993 clips, with first=100 1012 in my testing but never all clips as sometimes running the script returns clips that are missing in other runs, strange...
 
 Voilà! once you see the finished message in your terminal, check the `downloads` folder in this repo and you should see the videos there.
