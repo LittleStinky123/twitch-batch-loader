@@ -35,17 +35,44 @@ def dl_progress(count, block_size, total_size):
     sys.stdout.flush()
 
 def create_clip_list():
+    print(str(sys.argv))
     streamer_id = sys.argv[2]
     time_frame = ''
-    if len(sys.argv) > 3:
-        from_time = sys.argv[3]
-        to_time = sys.argv[4]
-        if from_time and to_time:
-            if re.search(time_regex_str, from_time) and re.search(time_regex_str, to_time):
-                time_frame = '&started_at=' + from_time + '&ended_at=' + to_time
+    from_time = "" if len(sys.argv) <= 3 else sys.argv[3]
+    to_time = "" if len(sys.argv) <= 4 else sys.argv[4]
+    if from_time and not to_time and re.search(time_regex_str, from_time):
+        time_frame = '&started_at=' + from_time
+    elif from_time and to_time and re.search(time_regex_str, from_time) and re.search(time_regex_str, to_time):
+        time_frame = '&started_at=' + from_time + '&ended_at=' + to_time
     clips = []
     list = []
-    value_list = [{"sort0":"","sort1":"", "first0":"","first1":""},{"sort0":"","sort1":"", "first0":"100","first1":"100"}]
+    #Generic first args
+    value_list = [{"sort0":"","sort1":"", "first0":"","first1":""},{"sort0":"","sort1":"", "first0":"","first1":"100"},{"sort0":"","sort1":"", "first0":"100","first1":""},{"sort0":"","sort1":"", "first0":"100","first1":"100"}\
+#    #Time args
+#    ,{"sort0":"","sort1":"time", "first0":"","first1":""},{"sort0":"","sort1":"time", "first0":"","first1":"100"},{"sort0":"","sort1":"time", "first0":"100","first1":""},{"sort0":"","sort1":"time", "first0":"100","first1":"100"},\
+#    {"sort0":"time","sort1":"", "first0":"","first1":""},{"sort0":"time","sort1":"", "first0":"","first1":"100"},{"sort0":"time","sort1":"", "first0":"100","first1":""},{"sort0":"time","sort1":"", "first0":"100","first1":"100"},\
+#    {"sort0":"time","sort1":"time", "first0":"","first1":""},{"sort0":"time","sort1":"time", "first0":"","first1":"100"},{"sort0":"time","sort1":"time", "first0":"100","first1":""},{"sort0":"time","sort1":"time", "first0":"100","first1":"100"},\
+#    #Time_desc args
+#    {"sort0":"","sort1":"time_desc", "first0":"","first1":""},{"sort0":"","sort1":"time_desc", "first0":"","first1":"100"},{"sort0":"","sort1":"time_desc", "first0":"100","first1":""},{"sort0":"","sort1":"time_desc", "first0":"100","first1":"100"},\
+#    {"sort0":"time_desc","sort1":"", "first0":"","first1":""},{"sort0":"time_desc","sort1":"", "first0":"","first1":"100"},{"sort0":"time_desc","sort1":"", "first0":"100","first1":""},{"sort0":"time_desc","sort1":"", "first0":"100","first1":"100"},\
+#    {"sort0":"time_desc","sort1":"time_desc", "first0":"","first1":""},{"sort0":"time_desc","sort1":"time_desc", "first0":"","first1":"100"},{"sort0":"time_desc","sort1":"time_desc", "first0":"100","first1":""},{"sort0":"time_desc","sort1":"time_desc", "first0":"100","first1":"100"},\
+#    #Time_asc args
+#    {"sort0":"","sort1":"time_asc", "first0":"","first1":""},{"sort0":"","sort1":"time_asc", "first0":"","first1":"100"},{"sort0":"","sort1":"time_asc", "first0":"100","first1":""},{"sort0":"","sort1":"time_asc", "first0":"100","first1":"100"},\
+#    {"sort0":"time_asc","sort1":"", "first0":"","first1":""},{"sort0":"time_asc","sort1":"", "first0":"","first1":"100"},{"sort0":"time_asc","sort1":"", "first0":"100","first1":""},{"sort0":"time_asc","sort1":"", "first0":"100","first1":"100"},\
+#    {"sort0":"time_asc","sort1":"time_asc", "first0":"","first1":""},{"sort0":"time_asc","sort1":"time_asc", "first0":"","first1":"100"},{"sort0":"time_asc","sort1":"time_asc", "first0":"100","first1":""},{"sort0":"time_asc","sort1":"time_asc", "first0":"100","first1":"100"},\
+#    #Views args
+#    {"sort0":"","sort1":"views", "first0":"","first1":""},{"sort0":"","sort1":"views", "first0":"","first1":"100"},{"sort0":"","sort1":"views", "first0":"100","first1":""},{"sort0":"","sort1":"views", "first0":"100","first1":"100"},\
+#    {"sort0":"views","sort1":"", "first0":"","first1":""},{"sort0":"views","sort1":"", "first0":"","first1":"100"},{"sort0":"views","sort1":"", "first0":"100","first1":""},{"sort0":"views","sort1":"", "first0":"100","first1":"100"},\
+#    {"sort0":"views","sort1":"views", "first0":"","first1":""},{"sort0":"views","sort1":"views", "first0":"","first1":"100"},{"sort0":"views","sort1":"views", "first0":"100","first1":""},{"sort0":"views","sort1":"views", "first0":"100","first1":"100"},\
+#    #Views_desc args
+#    {"sort0":"","sort1":"views_desc", "first0":"","first1":""},{"sort0":"","sort1":"views_desc", "first0":"","first1":"100"},{"sort0":"","sort1":"views_desc", "first0":"100","first1":""},{"sort0":"","sort1":"views_desc", "first0":"100","first1":"100"},\
+#    {"sort0":"views_desc","sort1":"", "first0":"","first1":""},{"sort0":"views_desc","sort1":"", "first0":"","first1":"100"},{"sort0":"views_desc","sort1":"", "first0":"100","first1":""},{"sort0":"views_desc","sort1":"", "first0":"100","first1":"100"},\
+#    {"sort0":"views_desc","sort1":"views_desc", "first0":"","first1":""},{"sort0":"views_desc","sort1":"views_desc", "first0":"","first1":"100"},{"sort0":"views_desc","sort1":"views_desc", "first0":"100","first1":""},{"sort0":"views_desc","sort1":"views_desc", "first0":"100","first1":"100"},\
+#    #Views_asc args
+#    {"sort0":"","sort1":"views_asc", "first0":"","first1":""},{"sort0":"","sort1":"views_asc", "first0":"","first1":"100"},{"sort0":"","sort1":"views_asc", "first0":"100","first1":""},{"sort0":"","sort1":"views_asc", "first0":"100","first1":"100"},\
+#    {"sort0":"views_asc","sort1":"", "first0":"","first1":""},{"sort0":"views_asc","sort1":"", "first0":"","first1":"100"},{"sort0":"views_asc","sort1":"", "first0":"100","first1":""},{"sort0":"views_asc","sort1":"", "first0":"100","first1":"100"},\
+#    {"sort0":"views_asc","sort1":"views_asc", "first0":"","first1":""},{"sort0":"views_asc","sort1":"views_asc", "first0":"","first1":"100"},{"sort0":"views_asc","sort1":"views_asc", "first0":"100","first1":""},{"sort0":"views_asc","sort1":"views_asc", "first0":"100","first1":"100"},\
+    ]
     for current_dict in value_list:
         print("Preparing clip list using: " + str(current_dict) + "...")
         sort = "&sort=" + current_dict['sort0'] if current_dict['sort0'] else ""
@@ -54,16 +81,16 @@ def create_clip_list():
         while clip_list['pagination']:
             sort = "&sort=" + current_dict['sort1'] if current_dict['sort1'] else ""
             first = "&first=" + current_dict['first1'] if current_dict['first1'] else ""
-            clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id+ "&after=" + clip_list['pagination']['cursor'] + sort + first, headers={"Client-ID": cid}).json()
+            clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id+ "&after=" + clip_list['pagination']['cursor']  + time_frame + sort + first, headers={"Client-ID": cid}).json()
             for entry in clip_list['data']:
-                if entry['url'] not in list:
+                if {'url':entry['url'], 'created_at': entry['created_at']} not in list:
                     print("New entry: " + str(entry['url']))
-                    list.append(entry['url'])
-
+                    list.append({'url':entry['url'], 'created_at': entry['created_at']})
+    sorted_list = sorted(list, key = lambda i: i['created_at'], reverse=True)
     f4 = open("clips.txt", "w")
-    for entry in list:
-        f4.write(entry + '\n')
-    print("Clip list created with size: " + str(len(list)))
+    for entry in sorted_list:
+        f4.write(entry['url'] + "\n")
+    print("Clip list created with size: " + str(len(sorted_list)))
 
 def download_clips():
     for clip in open('clips.txt', 'r'):
