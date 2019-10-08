@@ -10,20 +10,37 @@ time_regex_str = '^([0-9]+)-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])[Tt]([01][0-
 broadcaster_id = ''
 from_time = ''
 to_time = ''
+video_map = {}
+game_map = {}
 
 def retrieve_mp4_data(slug):
     cid = sys.argv[1]
+    video_info = ''
+    video_name = ''
+    game_name = ''
     clip_info = requests.get(
         "https://api.twitch.tv/helix/clips?id=" + slug,
         headers={"Client-ID": cid}).json()
-    game_info = requests.get(
-        "https://api.twitch.tv/helix/games?id=" + clip_info['data'][0]['game_id'],
-        headers={"Client-ID": cid}).json()
+    if clip_info['data'][0]['game_id']:
+        if game_map.get(clip_info['data'][0]['game_id']):
+            game_name = game_map.get(clip_info['data'][0]['game_id'])
+        else:
+            game_info = requests.get(
+            "https://api.twitch.tv/helix/games?id=" + clip_info['data'][0]['game_id'],
+            headers={"Client-ID": cid}).json()
+            game_map.update({clip_info['data'][0]['game_id'] : game_info['data'][0]['name']})
+            game_name = game_map.get(clip_info['data'][0]['game_id'])
     thumb_url = clip_info['data'][0]['thumbnail_url']
-    if not game_info['data']:
-        title = clip_info['data'][0]['created_at'] + '_' + clip_info['data'][0]['title'] + '_' + clip_info['data'][0]['creator_name'] + '_' + slug
-    else:
-         title = clip_info['data'][0]['created_at'] + '_' + game_info['data'][0]['name'] + '_' + clip_info['data'][0]['title'] + '_' + clip_info['data'][0]['creator_name'] + '_' + slug
+    if clip_info['data'][0]['video_id']:
+        if video_map.get(clip_info['data'][0]['video_id']):
+            video_name = video_map.get(clip_info['data'][0]['video_id'])
+        else:
+            video_info = requests.get(
+            "https://api.twitch.tv/helix/videos?id=" + clip_info['data'][0]['video_id'],
+            headers={"Client-ID": cid}).json()
+            video_map.update({clip_info['data'][0]['video_id'] : video_info['data'][0]['title']})
+            video_name = video_map.get(clip_info['data'][0]['video_id'])
+    title = clip_info['data'][0]['created_at'] + '_' + game_name + '_' + video_name + '_' + clip_info['data'][0]['title'] + '_' + clip_info['data'][0]['creator_name'] + '_' + slug
     slice_point = thumb_url.index("-preview-")
     mp4_url = thumb_url[:slice_point] + '.mp4'
     return mp4_url, title
@@ -35,7 +52,6 @@ def dl_progress(count, block_size, total_size):
     sys.stdout.flush()
 
 def create_clip_list():
-    print(str(sys.argv))
     streamer_id = sys.argv[2]
     time_frame = ''
     from_time = "" if len(sys.argv) <= 3 else sys.argv[3]
@@ -49,7 +65,7 @@ def create_clip_list():
     #Generic first args
     value_list = [{"sort0":"","sort1":"", "first0":"","first1":""},{"sort0":"","sort1":"", "first0":"","first1":"100"},{"sort0":"","sort1":"", "first0":"100","first1":""},{"sort0":"","sort1":"", "first0":"100","first1":"100"}\
 #    #Time args
-#    ,{"sort0":"","sort1":"time", "first0":"","first1":""},{"sort0":"","sort1":"time", "first0":"","first1":"100"},{"sort0":"","sort1":"time", "first0":"100","first1":""},{"sort0":"","sort1":"time", "first0":"100","first1":"100"},\
+#    ,{"sort0":"","sort1":"time", "first0":"","first1":""},{"sort0":"","sort1":"time", "first0":"","first1":"100"},{"sort0":"","sort1 ":"time", "first0":"100","first1":""},{"sort0":"","sort1":"time", "first0":"100","first1":"100"},\
 #    {"sort0":"time","sort1":"", "first0":"","first1":""},{"sort0":"time","sort1":"", "first0":"","first1":"100"},{"sort0":"time","sort1":"", "first0":"100","first1":""},{"sort0":"time","sort1":"", "first0":"100","first1":"100"},\
 #    {"sort0":"time","sort1":"time", "first0":"","first1":""},{"sort0":"time","sort1":"time", "first0":"","first1":"100"},{"sort0":"time","sort1":"time", "first0":"100","first1":""},{"sort0":"time","sort1":"time", "first0":"100","first1":"100"},\
 #    #Time_desc args
