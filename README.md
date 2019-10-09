@@ -19,7 +19,8 @@ pip install requests
 
 3) Then run the batchloader script with your new Client Id using the provided clip list or create your list automatically with a provided broadcaster id, filtering by time is possible by provding two RFC3339 timestamps.
 The timestamps need to be at least one month apart to get results back from twitch.
-The resulting list is maybe still not complete though, there seems to be a cap after fetching approximately 1046 clips in the full timespan from beginning to end, by splitting the time frame up into 1 month steps I was able to go above the 1045 limit.
+The resulting list is still not complete though, there seems to be a cap after fetching approximately 1046 clips in the full timespan from beginning to end, by splitting the time frame up into 1 month steps I was able to go above the 1045 limit.
+By using the twitch website to list all clips by views to get additional clip slugs I was able to get clips I couldn't get using the twich API.
 ```
 cd twitch-batch-loader
 python batchloader.py <YOUR AWESOME CLIENT ID> [<THE AWESOME BROADCASTER ID> [<Start date of time frame> <End date of time frame>]]
