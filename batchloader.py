@@ -2,7 +2,9 @@ import re
 import urllib.request
 import requests
 import sys
-import time
+from datetime import datetime, timezone 
+import datedelta
+import copy
 
 basepath = 'downloads/'
 base_clip_path = 'https://clips-media-assets2.twitch.tv/'
@@ -21,6 +23,7 @@ def retrieve_mp4_data(slug):
     clip_info = requests.get(
         "https://api.twitch.tv/helix/clips?id=" + slug,
         headers={"Client-ID": cid}).json()
+    print(str(clip_info))
     if clip_info['data'][0]['game_id']:
         if game_map.get(clip_info['data'][0]['game_id']):
             game_name = game_map.get(clip_info['data'][0]['game_id'])
@@ -89,15 +92,40 @@ def create_clip_list():
 #    {"sort0":"views_asc","sort1":"", "first0":"","first1":""},{"sort0":"views_asc","sort1":"", "first0":"","first1":"100"},{"sort0":"views_asc","sort1":"", "first0":"100","first1":""},{"sort0":"views_asc","sort1":"", "first0":"100","first1":"100"},\
 #    {"sort0":"views_asc","sort1":"views_asc", "first0":"","first1":""},{"sort0":"views_asc","sort1":"views_asc", "first0":"","first1":"100"},{"sort0":"views_asc","sort1":"views_asc", "first0":"100","first1":""},{"sort0":"views_asc","sort1":"views_asc", "first0":"100","first1":"100"},\
     ]
+    if from_time and not to_time:
+        # Make time_range requests spanning 1 month until current day
+        date_time_obj = datetime.strptime(from_time, '%Y-%m-%dT%H:%M:%SZ')
+        next_month_obj = copy.deepcopy(date_time_obj) + datedelta.MONTH
+        time_frame = '&started_at=' + date_time_obj.isoformat(timespec='seconds') + 'Z&ended_at=' + next_month_obj.isoformat(timespec='seconds') + 'Z'
+        today = datetime.today()
+        while date_time_obj < today:
+            time_frame = '&started_at=' + date_time_obj.isoformat(timespec='seconds') + 'Z&ended_at=' + next_month_obj.isoformat(timespec='seconds') + 'Z'
+            print("Using time_frame: " + time_frame)
+            for current_dict in value_list:
+                print("Preparing clip list using: " + str(current_dict) + "...")
+                sort = "&sort=" + current_dict['sort0'] if current_dict['sort0'] else ""
+                first = "&first=" + current_dict['first0'] if current_dict['first0'] else ""
+                clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id + time_frame + sort + first, headers={"Client-ID": cid}).json()
+                while clip_list.get('pagination'):
+                    sort = "&sort=" + current_dict.get('sort1') if current_dict.get('sort1') else ""
+                    first = "&first=" + current_dict.get('first1') if current_dict.get('first1') else ""
+                    clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id+ "&after=" + clip_list['pagination']['cursor']  + time_frame + sort + first, headers={"Client-ID": cid}).json()
+                    for entry in clip_list['data']:
+                        if {'url':entry['url'], 'created_at': entry['created_at']} not in list:
+                            print("New entry: " + str(entry['url']))
+                            list.append({'url':entry['url'], 'created_at': entry['created_at']})
+            date_time_obj = date_time_obj + datedelta.MONTH
+            next_month_obj = next_month_obj + datedelta.MONTH
+    # Some clips aren't listed in the time_frame requests so do this as well
     for current_dict in value_list:
         print("Preparing clip list using: " + str(current_dict) + "...")
         sort = "&sort=" + current_dict['sort0'] if current_dict['sort0'] else ""
         first = "&first=" + current_dict['first0'] if current_dict['first0'] else ""
-        clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id + time_frame + sort + first, headers={"Client-ID": cid}).json()
+        clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id + sort + first, headers={"Client-ID": cid}).json()
         while clip_list['pagination']:
-            sort = "&sort=" + current_dict['sort1'] if current_dict['sort1'] else ""
-            first = "&first=" + current_dict['first1'] if current_dict['first1'] else ""
-            clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id+ "&after=" + clip_list['pagination']['cursor']  + time_frame + sort + first, headers={"Client-ID": cid}).json()
+            sort = "&sort=" + current_dict.get('sort1') if current_dict.get('sort1') else ""
+            first = "&first=" + current_dict.get('first1') if current_dict.get('first1') else ""
+            clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id+ "&after=" + clip_list['pagination']['cursor']  + sort + first, headers={"Client-ID": cid}).json()
             for entry in clip_list['data']:
                 if {'url':entry['url'], 'created_at': entry['created_at']} not in list:
                     print("New entry: " + str(entry['url']))
@@ -129,7 +157,6 @@ if len(sys.argv) > 2:
 
 if broadcaster_id:
     create_clip_list()
-    download_clips()
 else:
     download_clips()
 
