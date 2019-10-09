@@ -23,7 +23,7 @@ def retrieve_mp4_data(slug):
     clip_info = requests.get(
         "https://api.twitch.tv/helix/clips?id=" + slug,
         headers={"Client-ID": cid}).json()
-    print(str(clip_info))
+    print("1:" + str(clip_info))
     if clip_info['data'][0]['game_id']:
         if game_map.get(clip_info['data'][0]['game_id']):
             game_name = game_map.get(clip_info['data'][0]['game_id'])
@@ -31,6 +31,7 @@ def retrieve_mp4_data(slug):
             game_info = requests.get(
             "https://api.twitch.tv/helix/games?id=" + clip_info['data'][0]['game_id'],
             headers={"Client-ID": cid}).json()
+            print("2:" + str(game_info))
             game_map.update({clip_info['data'][0]['game_id'] : game_info['data'][0]['name']})
             game_name = game_map.get(clip_info['data'][0]['game_id'])
     thumb_url = clip_info['data'][0]['thumbnail_url']
@@ -43,7 +44,11 @@ def retrieve_mp4_data(slug):
             headers={"Client-ID": cid}).json()
             video_map.update({clip_info['data'][0]['video_id'] : video_info['data'][0]['title']})
             video_name = video_map.get(clip_info['data'][0]['video_id'])
-    title = clip_info['data'][0]['created_at'] + '_' + game_name + '_' + video_name + '_' + clip_info['data'][0]['title'] + '_' + clip_info['data'][0]['creator_name'] + '_' + slug
+    # No title provided, possibly too long file name
+    if video_name == clip_info['data'][0]['title']:
+        title = clip_info['data'][0]['created_at'] + '_' + game_name + '_' + video_name + '_' + clip_info['data'][0]['creator_name'] + '_' + slug
+    else:
+        title = clip_info['data'][0]['created_at'] + '_' + game_name + '_' + video_name + '_' + clip_info['data'][0]['title'] + '_' + clip_info['data'][0]['creator_name'] + '_' + slug
     slice_point = thumb_url.index("-preview-")
     mp4_url = thumb_url[:slice_point] + '.mp4'
     return mp4_url, title
