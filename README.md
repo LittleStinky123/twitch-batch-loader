@@ -17,7 +17,9 @@ pip install requests
 
 2) Delete the example clips in `clips.txt` and the ones your want. Put each URL on it's own line. No commas or anything like that.
 
-3) Then run the batchloader script with your new Client Id using the provided clip list or create your list automatically with a provided broadcaster id, filtering by time is possible by provding two RFC3339 timestamps
+3) Then run the batchloader script with your new Client Id using the provided clip list or create your list automatically with a provided broadcaster id, filtering by time is possible by provding two RFC3339 timestamps.
+The timestamps need to be at least one month apart as it seems to get results from twitch.
+The resulting list is not complete though, maybe there is a cap after fetching approximately 1046 clips, the clips that are left out are neither the oldest nor the latest ones, really strange.
 ```
 cd twitch-batch-loader
 python batchloader.py <YOUR AWESOME CLIENT ID> [<THE AWESOME BROADCASTER ID> [<Start date of time frame> <End date of time frame>]]
