@@ -71,7 +71,7 @@ def create_clip_list():
     list = []
     #Generic first args
     value_list = [{"sort0":"","sort1":"", "first0":"","first1":""},{"sort0":"","sort1":"", "first0":"","first1":"100"},{"sort0":"","sort1":"", "first0":"100","first1":""},{"sort0":"","sort1":"", "first0":"100","first1":"100"}\
-#    #Time args
+    #Time args
 #    ,{"sort0":"","sort1":"time", "first0":"","first1":""},{"sort0":"","sort1":"time", "first0":"","first1":"100"},{"sort0":"","sort1 ":"time", "first0":"100","first1":""},{"sort0":"","sort1":"time", "first0":"100","first1":"100"},\
 #    {"sort0":"time","sort1":"", "first0":"","first1":""},{"sort0":"time","sort1":"", "first0":"","first1":"100"},{"sort0":"time","sort1":"", "first0":"100","first1":""},{"sort0":"time","sort1":"", "first0":"100","first1":"100"},\
 #    {"sort0":"time","sort1":"time", "first0":"","first1":""},{"sort0":"time","sort1":"time", "first0":"","first1":"100"},{"sort0":"time","sort1":"time", "first0":"100","first1":""},{"sort0":"time","sort1":"time", "first0":"100","first1":"100"},\
@@ -152,7 +152,7 @@ def download_clips():
         print('"' + clip_title + '" -> ' + out_filename)
         print(mp4_url)
         urllib.request.urlretrieve(mp4_url, output_path, reporthook=dl_progress)
-        print('\nDone.')
+    print('\nDone.')
 
 # for each clip in clips.txt
 cid = sys.argv[1]
