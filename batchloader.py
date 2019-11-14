@@ -2,7 +2,7 @@ import re
 import urllib.request
 import requests
 import sys
-from datetime import datetime, timezone 
+from datetime import datetime, timezone, timedelta
 import datedelta
 import copy
 
@@ -71,30 +71,30 @@ def create_clip_list():
     list = []
     #Generic first args
     value_list = [{"sort0":"","sort1":"", "first0":"","first1":""},{"sort0":"","sort1":"", "first0":"","first1":"100"},{"sort0":"","sort1":"", "first0":"100","first1":""},{"sort0":"","sort1":"", "first0":"100","first1":"100"}\
-    #Time args
-#    ,{"sort0":"","sort1":"time", "first0":"","first1":""},{"sort0":"","sort1":"time", "first0":"","first1":"100"},{"sort0":"","sort1 ":"time", "first0":"100","first1":""},{"sort0":"","sort1":"time", "first0":"100","first1":"100"},\
-#    {"sort0":"time","sort1":"", "first0":"","first1":""},{"sort0":"time","sort1":"", "first0":"","first1":"100"},{"sort0":"time","sort1":"", "first0":"100","first1":""},{"sort0":"time","sort1":"", "first0":"100","first1":"100"},\
-#    {"sort0":"time","sort1":"time", "first0":"","first1":""},{"sort0":"time","sort1":"time", "first0":"","first1":"100"},{"sort0":"time","sort1":"time", "first0":"100","first1":""},{"sort0":"time","sort1":"time", "first0":"100","first1":"100"},\
-#    #Time_desc args
-#    {"sort0":"","sort1":"time_desc", "first0":"","first1":""},{"sort0":"","sort1":"time_desc", "first0":"","first1":"100"},{"sort0":"","sort1":"time_desc", "first0":"100","first1":""},{"sort0":"","sort1":"time_desc", "first0":"100","first1":"100"},\
-#    {"sort0":"time_desc","sort1":"", "first0":"","first1":""},{"sort0":"time_desc","sort1":"", "first0":"","first1":"100"},{"sort0":"time_desc","sort1":"", "first0":"100","first1":""},{"sort0":"time_desc","sort1":"", "first0":"100","first1":"100"},\
-#    {"sort0":"time_desc","sort1":"time_desc", "first0":"","first1":""},{"sort0":"time_desc","sort1":"time_desc", "first0":"","first1":"100"},{"sort0":"time_desc","sort1":"time_desc", "first0":"100","first1":""},{"sort0":"time_desc","sort1":"time_desc", "first0":"100","first1":"100"},\
-#    #Time_asc args
-#    {"sort0":"","sort1":"time_asc", "first0":"","first1":""},{"sort0":"","sort1":"time_asc", "first0":"","first1":"100"},{"sort0":"","sort1":"time_asc", "first0":"100","first1":""},{"sort0":"","sort1":"time_asc", "first0":"100","first1":"100"},\
-#    {"sort0":"time_asc","sort1":"", "first0":"","first1":""},{"sort0":"time_asc","sort1":"", "first0":"","first1":"100"},{"sort0":"time_asc","sort1":"", "first0":"100","first1":""},{"sort0":"time_asc","sort1":"", "first0":"100","first1":"100"},\
-#    {"sort0":"time_asc","sort1":"time_asc", "first0":"","first1":""},{"sort0":"time_asc","sort1":"time_asc", "first0":"","first1":"100"},{"sort0":"time_asc","sort1":"time_asc", "first0":"100","first1":""},{"sort0":"time_asc","sort1":"time_asc", "first0":"100","first1":"100"},\
-#    #Views args
-#    {"sort0":"","sort1":"views", "first0":"","first1":""},{"sort0":"","sort1":"views", "first0":"","first1":"100"},{"sort0":"","sort1":"views", "first0":"100","first1":""},{"sort0":"","sort1":"views", "first0":"100","first1":"100"},\
-#    {"sort0":"views","sort1":"", "first0":"","first1":""},{"sort0":"views","sort1":"", "first0":"","first1":"100"},{"sort0":"views","sort1":"", "first0":"100","first1":""},{"sort0":"views","sort1":"", "first0":"100","first1":"100"},\
-#    {"sort0":"views","sort1":"views", "first0":"","first1":""},{"sort0":"views","sort1":"views", "first0":"","first1":"100"},{"sort0":"views","sort1":"views", "first0":"100","first1":""},{"sort0":"views","sort1":"views", "first0":"100","first1":"100"},\
-#    #Views_desc args
-#    {"sort0":"","sort1":"views_desc", "first0":"","first1":""},{"sort0":"","sort1":"views_desc", "first0":"","first1":"100"},{"sort0":"","sort1":"views_desc", "first0":"100","first1":""},{"sort0":"","sort1":"views_desc", "first0":"100","first1":"100"},\
-#    {"sort0":"views_desc","sort1":"", "first0":"","first1":""},{"sort0":"views_desc","sort1":"", "first0":"","first1":"100"},{"sort0":"views_desc","sort1":"", "first0":"100","first1":""},{"sort0":"views_desc","sort1":"", "first0":"100","first1":"100"},\
-#    {"sort0":"views_desc","sort1":"views_desc", "first0":"","first1":""},{"sort0":"views_desc","sort1":"views_desc", "first0":"","first1":"100"},{"sort0":"views_desc","sort1":"views_desc", "first0":"100","first1":""},{"sort0":"views_desc","sort1":"views_desc", "first0":"100","first1":"100"},\
-#    #Views_asc args
-#    {"sort0":"","sort1":"views_asc", "first0":"","first1":""},{"sort0":"","sort1":"views_asc", "first0":"","first1":"100"},{"sort0":"","sort1":"views_asc", "first0":"100","first1":""},{"sort0":"","sort1":"views_asc", "first0":"100","first1":"100"},\
-#    {"sort0":"views_asc","sort1":"", "first0":"","first1":""},{"sort0":"views_asc","sort1":"", "first0":"","first1":"100"},{"sort0":"views_asc","sort1":"", "first0":"100","first1":""},{"sort0":"views_asc","sort1":"", "first0":"100","first1":"100"},\
-#    {"sort0":"views_asc","sort1":"views_asc", "first0":"","first1":""},{"sort0":"views_asc","sort1":"views_asc", "first0":"","first1":"100"},{"sort0":"views_asc","sort1":"views_asc", "first0":"100","first1":""},{"sort0":"views_asc","sort1":"views_asc", "first0":"100","first1":"100"},\
+    # #Time args
+   # ,{"sort0":"","sort1":"time", "first0":"","first1":""},{"sort0":"","sort1":"time", "first0":"","first1":"100"},{"sort0":"","sort1 ":"time", "first0":"100","first1":""},{"sort0":"","sort1":"time", "first0":"100","first1":"100"},\
+   # {"sort0":"time","sort1":"", "first0":"","first1":""},{"sort0":"time","sort1":"", "first0":"","first1":"100"},{"sort0":"time","sort1":"", "first0":"100","first1":""},{"sort0":"time","sort1":"", "first0":"100","first1":"100"},\
+   # {"sort0":"time","sort1":"time", "first0":"","first1":""},{"sort0":"time","sort1":"time", "first0":"","first1":"100"},{"sort0":"time","sort1":"time", "first0":"100","first1":""},{"sort0":"time","sort1":"time", "first0":"100","first1":"100"},\
+   # #Time_desc args
+   # {"sort0":"","sort1":"time_desc", "first0":"","first1":""},{"sort0":"","sort1":"time_desc", "first0":"","first1":"100"},{"sort0":"","sort1":"time_desc", "first0":"100","first1":""},{"sort0":"","sort1":"time_desc", "first0":"100","first1":"100"},\
+   # {"sort0":"time_desc","sort1":"", "first0":"","first1":""},{"sort0":"time_desc","sort1":"", "first0":"","first1":"100"},{"sort0":"time_desc","sort1":"", "first0":"100","first1":""},{"sort0":"time_desc","sort1":"", "first0":"100","first1":"100"},\
+   # {"sort0":"time_desc","sort1":"time_desc", "first0":"","first1":""},{"sort0":"time_desc","sort1":"time_desc", "first0":"","first1":"100"},{"sort0":"time_desc","sort1":"time_desc", "first0":"100","first1":""},{"sort0":"time_desc","sort1":"time_desc", "first0":"100","first1":"100"},\
+   # #Time_asc args
+   # {"sort0":"","sort1":"time_asc", "first0":"","first1":""},{"sort0":"","sort1":"time_asc", "first0":"","first1":"100"},{"sort0":"","sort1":"time_asc", "first0":"100","first1":""},{"sort0":"","sort1":"time_asc", "first0":"100","first1":"100"},\
+   # {"sort0":"time_asc","sort1":"", "first0":"","first1":""},{"sort0":"time_asc","sort1":"", "first0":"","first1":"100"},{"sort0":"time_asc","sort1":"", "first0":"100","first1":""},{"sort0":"time_asc","sort1":"", "first0":"100","first1":"100"},\
+   # {"sort0":"time_asc","sort1":"time_asc", "first0":"","first1":""},{"sort0":"time_asc","sort1":"time_asc", "first0":"","first1":"100"},{"sort0":"time_asc","sort1":"time_asc", "first0":"100","first1":""},{"sort0":"time_asc","sort1":"time_asc", "first0":"100","first1":"100"},\
+   # #Views args
+   # {"sort0":"","sort1":"views", "first0":"","first1":""},{"sort0":"","sort1":"views", "first0":"","first1":"100"},{"sort0":"","sort1":"views", "first0":"100","first1":""},{"sort0":"","sort1":"views", "first0":"100","first1":"100"},\
+   # {"sort0":"views","sort1":"", "first0":"","first1":""},{"sort0":"views","sort1":"", "first0":"","first1":"100"},{"sort0":"views","sort1":"", "first0":"100","first1":""},{"sort0":"views","sort1":"", "first0":"100","first1":"100"},\
+   # {"sort0":"views","sort1":"views", "first0":"","first1":""},{"sort0":"views","sort1":"views", "first0":"","first1":"100"},{"sort0":"views","sort1":"views", "first0":"100","first1":""},{"sort0":"views","sort1":"views", "first0":"100","first1":"100"},\
+   # #Views_desc args
+   # {"sort0":"","sort1":"views_desc", "first0":"","first1":""},{"sort0":"","sort1":"views_desc", "first0":"","first1":"100"},{"sort0":"","sort1":"views_desc", "first0":"100","first1":""},{"sort0":"","sort1":"views_desc", "first0":"100","first1":"100"},\
+   # {"sort0":"views_desc","sort1":"", "first0":"","first1":""},{"sort0":"views_desc","sort1":"", "first0":"","first1":"100"},{"sort0":"views_desc","sort1":"", "first0":"100","first1":""},{"sort0":"views_desc","sort1":"", "first0":"100","first1":"100"},\
+   # {"sort0":"views_desc","sort1":"views_desc", "first0":"","first1":""},{"sort0":"views_desc","sort1":"views_desc", "first0":"","first1":"100"},{"sort0":"views_desc","sort1":"views_desc", "first0":"100","first1":""},{"sort0":"views_desc","sort1":"views_desc", "first0":"100","first1":"100"},\
+   # #Views_asc args
+   # {"sort0":"","sort1":"views_asc", "first0":"","first1":""},{"sort0":"","sort1":"views_asc", "first0":"","first1":"100"},{"sort0":"","sort1":"views_asc", "first0":"100","first1":""},{"sort0":"","sort1":"views_asc", "first0":"100","first1":"100"},\
+   # {"sort0":"views_asc","sort1":"", "first0":"","first1":""},{"sort0":"views_asc","sort1":"", "first0":"","first1":"100"},{"sort0":"views_asc","sort1":"", "first0":"100","first1":""},{"sort0":"views_asc","sort1":"", "first0":"100","first1":"100"},\
+   # {"sort0":"views_asc","sort1":"views_asc", "first0":"","first1":""},{"sort0":"views_asc","sort1":"views_asc", "first0":"","first1":"100"},{"sort0":"views_asc","sort1":"views_asc", "first0":"100","first1":""},{"sort0":"views_asc","sort1":"views_asc", "first0":"100","first1":"100"},\
     ]
     if from_time and not to_time:
         # Make time_range requests spanning 1 month until current day
@@ -104,19 +104,23 @@ def create_clip_list():
         today = datetime.today()
         while date_time_obj < today:
             time_frame = '&started_at=' + date_time_obj.isoformat(timespec='seconds') + 'Z&ended_at=' + next_month_obj.isoformat(timespec='seconds') + 'Z'
-            print("Using time_frame: " + time_frame)
+            print("using time_frame: " + time_frame)
             for current_dict in value_list:
-                print("Preparing clip list using: " + str(current_dict) + "...")
+                print("preparing clip list using: " + str(current_dict) + "...")
                 sort = "&sort=" + current_dict['sort0'] if current_dict['sort0'] else ""
                 first = "&first=" + current_dict['first0'] if current_dict['first0'] else ""
-                clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id + time_frame + sort + first, headers={"Client-ID": cid}).json()
+                clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id + time_frame + sort + first, headers={"client-id": cid}).json()
+                for entry in clip_list['data']:
+                    if {'url':entry['url'], 'created_at': entry['created_at']} not in list:
+                        print("new entry: " + str(entry['url']))
+                        list.append({'url':entry['url'], 'created_at': entry['created_at']})
                 while clip_list.get('pagination'):
                     sort = "&sort=" + current_dict.get('sort1') if current_dict.get('sort1') else ""
                     first = "&first=" + current_dict.get('first1') if current_dict.get('first1') else ""
-                    clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id+ "&after=" + clip_list['pagination']['cursor']  + time_frame + sort + first, headers={"Client-ID": cid}).json()
+                    clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id+ "&after=" + clip_list['pagination']['cursor']  + time_frame + sort + first, headers={"client-id": cid}).json()
                     for entry in clip_list['data']:
                         if {'url':entry['url'], 'created_at': entry['created_at']} not in list:
-                            print("New entry: " + str(entry['url']))
+                            print("new entry: " + str(entry['url']))
                             list.append({'url':entry['url'], 'created_at': entry['created_at']})
             date_time_obj = date_time_obj + datedelta.MONTH
             next_month_obj = next_month_obj + datedelta.MONTH
@@ -126,6 +130,10 @@ def create_clip_list():
         sort = "&sort=" + current_dict['sort0'] if current_dict['sort0'] else ""
         first = "&first=" + current_dict['first0'] if current_dict['first0'] else ""
         clip_list = requests.get("https://api.twitch.tv/helix/clips?broadcaster_id=" + streamer_id + provided_time_frame + sort + first, headers={"Client-ID": cid}).json()
+        for entry in clip_list['data']:
+            if {'url':entry['url'], 'created_at': entry['created_at']} not in list:
+                print("New entry: " + str(entry['url']))
+                list.append({'url':entry['url'], 'created_at': entry['created_at']})
         while clip_list['pagination']:
             sort = "&sort=" + current_dict.get('sort1') if current_dict.get('sort1') else ""
             first = "&first=" + current_dict.get('first1') if current_dict.get('first1') else ""
